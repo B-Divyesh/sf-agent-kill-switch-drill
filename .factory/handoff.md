@@ -1,64 +1,79 @@
-# Handoff — Agent Kill-Switch Drill v0.1.0
+# Verification handoff — Agent Kill-Switch Drill
 
-## Delivered
+## Result
 
-- Rust single-binary CLI, `agent-kill-switch-drill`, with `init`, `validate`,
-  and `drill` commands; useful `--help`; JSON output; exit codes; and typed
-  public Rust structures.
-- TOML profiles reference only IDs from a command allowlist. Commands are argv
-  arrays rather than shell strings. Dry-run is default; `--live --confirm
-  <exact-profile>` is required for action execution.
-- Each stage runs its declared verification command and produces a scrubbed
-  incident card. It records command IDs and statuses only, never command
-  strings, output, environment, or provider secrets. A failed/unavailable
-  command becomes a failed checkpoint so the card shows the weak link.
-- Vite static landing/docs site with an interactive safe drill, local incident
-  card export, CLI instructions, responsive dithered/halftone visual system,
-  `/privacy/` and `/terms/`, and optional one-time support unlock.
-- Paid-unlock contract: hosted Sociobot checkout, query-token storage and URL
-  cleanup, daily cached verification, offline optimistic cache, restore field,
-  revocation notice, and a gated printable tabletop worksheet. Free safety and
-  export tooling is not gated.
-- Original generated relay illustration is responsive WebP: 1280 px / 268 KB
-  and 640 px / 45 KB. Prompt and provenance are recorded in `design.md`.
+**FAIL**
 
-## Run and verify
+- Candidate: `78bac1779d31c4cdfef76b2bf0a1ed68cc2b28ef`
+- Live URL: `https://agent-kill-switch-drill.sociobot.in`
+- Verified: 2026-08-28 UTC
+- Full evidence: [verification.md](verification.md)
+
+The live HTML, hashed JS/CSS, robots file, and both images match a fresh local
+production build byte for byte. The result is therefore based on the candidate
+itself, not a stale deployment or a deployment-only outage.
+
+## Release blockers
+
+1. CLI commands have no timeout. An unresponsive verification can hang forever
+   and produce no incident card, violating the core under-five-minute job.
+2. The paid worksheet is visibly downloadable without a license because the
+   `.button` display rule overrides the link's `hidden` attribute.
+3. Dark mode has an axe serious contrast violation across 21 nodes on both
+   desktop and 390 px mobile (ratios down to 1.21:1).
+
+Additional defects: navigation/footer touch targets are below 44 px; the Vite
+dev dependency has a high-severity advisory; clean crate packaging fails after
+`npm ci` and the forced crate contains 36 `node_modules` README/LICENSE files;
+the live origin lacks CSP, Permissions-Policy, and clickjacking policy; hashed
+assets cache for only 30 seconds; unknown URLs return 200.
+
+## What passed
+
+- `cargo test --all-targets`: 4 passed.
+- `cargo test --doc`: 1 passed.
+- Rust fmt and clippy with warnings denied: passed.
+- `npm test`: 2 Node + 4 Playwright tests passed.
+- `npm run build` and `npm run build:site`: passed; `dist/` produced.
+- Release build and `cargo package --locked --allow-dirty`: passed.
+- The packaged CLI installed in a clean prefix; a separate Rust consumer used
+  its public API successfully.
+- Normal dry-run/live flows, invalid input, refusal to overwrite, confirmation
+  guard, exit codes, JSON output, failure reporting, and secret scrubbing were
+  exercised successfully apart from the timeout blocker.
+- Light-theme and legal-page axe scans had zero serious/critical findings;
+  keyboard flow, visible focus, responsive reflow, console/page errors, and
+  reduced motion otherwise passed.
+- Default page load contacted only the product origin and set no cookies.
+- License URL cleanup, local storage, invalid-token locking, and one-day cache
+  behavior passed logically.
+- Verify endpoint rate limit passed: requests 1–30 returned 200; request 31
+  returned 429 with `Retry-After: 4`.
+- Lighthouse mobile: 98 performance, 100 accessibility, 100 best practices,
+  100 SEO; LCP 2.3 s, TBT 20 ms, CLS 0.
+
+## Reproduce
 
 ```sh
-cargo test
+npm ci
+cargo test --all-targets
+cargo test --doc
+cargo fmt --all -- --check
+cargo clippy --all-targets --all-features -- -D warnings
 npm test
-npm run build       # deploy output: ./dist/index.html
-npm run build:site  # documentation output: ./dist/site/index.html
-cargo package --allow-dirty
+npm run build
+npm audit --audit-level=high
+cargo package --locked
 ```
 
-Manual CLI smoke test run:
+The final two commands expose the dependency and packaging failures. See the
+full verification report for isolated-package, CLI boundary, live-browser,
+headers, hashes, Lighthouse, and rate-limit evidence.
 
-```sh
-cargo build --release
-./target/release/agent-kill-switch-drill validate --config examples/kill-switch.toml --json
-./target/release/agent-kill-switch-drill drill sample --config examples/kill-switch.toml --report /tmp/incident-card.json
-```
+## Next steps
 
-Results verified on 2026-08-28:
-
-- `cargo test`: 4 unit tests + 1 doctest passed.
-- `npm test`: 2 static tests + 4 Playwright desktop/mobile tests passed.
-  The browser tests exercise keyboard-operable controls, safe-drill state, legal
-  navigation, and axe with zero serious/critical findings.
-- `npm run build` and `npm run build:site`: passed. Initial JS is 4.75 KB,
-  CSS 7.79 KB, hero image is at/below 300 KB.
-- Production static-server Lighthouse mobile: Performance 98, Accessibility
-  100, Best Practices 100, SEO 100; LCP 2.4 s, CLS 0, TBT 0 ms.
-- `npm audit --omit=dev --audit-level=high`: 0 vulnerabilities.
-- `cargo package --allow-dirty`: passed; package is 222.5 KiB unpacked.
-
-## Known gaps / next steps
-
-- The included sample commands are intentionally harmless `printf` commands.
-  Teams must replace them with reviewed, versioned control-plane commands and
-  run a real live drill in their own environment.
-- The static paid worksheet is client-side license-gated as required by the
-  static product model; licensing is not an authorization system for secrets.
-- Deployment cache headers and a service worker are deployment concerns; no
-  external runtime services or analytics are included in this repository.
+Add per-command timeouts and timeout reports; restore actual paid gating; fix
+dark-theme contrast and target sizes; update Vite; root-anchor Cargo package
+includes; add CSP/Permissions-Policy/frame protection; set immutable caching
+for hashed assets; and return 404 for unknown paths. Then run a fresh independent
+verification against the replacement commit and deployment.
