@@ -1,0 +1,29 @@
+[package]
+name = "agent-kill-switch-drill"
+version = "0.1.0"
+edition = "2021"
+license = "MIT"
+description = "Rehearse and document staged agent capability stop paths"
+readme = "README.md"
+repository = "https://github.com/B-Divyesh/sf-agent-kill-switch-drill"
+keywords = ["agents", "incident-response", "security", "cli"]
+categories = ["command-line-utilities"]
+include = ["src/**", "examples/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE", "CHANGELOG.md"]
+
+[lib]
+name = "kill_switch_drill"
+path = "src/lib.rs"
+
+[[bin]]
+name = "agent-kill-switch-drill"
+path = "src/main.rs"
+
+[dependencies]
+clap = { version = "4.5", features = ["derive"] }
+serde = { version = "1", features = ["derive"] }
+serde_json = "1"
+thiserror = "2"
+toml = "0.8"
+
+[dev-dependencies]
+tempfile = "3"

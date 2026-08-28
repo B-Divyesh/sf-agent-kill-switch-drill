@@ -1,0 +1,43 @@
+AGENT KILL-SWITCH DRILL — TABLETOP WORKSHEET PACK
+
+Print one copy per capability profile. This is a rehearsal record, not an
+automatic control plane.
+
+1. CAPABILITY CARD
+
+Profile name:
+Agent / workflow:
+Business owner:
+Incident commander:
+What authority must be withdrawn?
+What harm does that prevent?
+
+2. STOP-PATH MAP
+
+Step 1 — control plane:
+Declared command ID:
+Expected observable response:
+Owner:
+Fallback if it fails:
+
+Step 2 — control plane:
+Declared command ID:
+Expected observable response:
+Owner:
+Fallback if it fails:
+
+Step 3 — control plane:
+Declared command ID:
+Expected observable response:
+Owner:
+Fallback if it fails:
+
+3. OBSERVER LOG
+
+Drill date/time:
+Dry run or live drill:
+What was confirmed?
+What was not confirmed?
+Time to each confirmation:
+What must change before the next drill?
+Next owner and date:

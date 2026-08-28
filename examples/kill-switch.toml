@@ -1,0 +1,33 @@
+# This sample is harmless: all commands only print a simulated response.
+version = 1
+
+[allowlist.proxy_deny]
+command = ["printf", "proxy rule accepted\\n"]
+[allowlist.proxy_check]
+command = ["printf", "HTTP 403 capability denied\\n"]
+expect_stdout = "403"
+[allowlist.credential_revoke]
+command = ["printf", "credential revoke accepted\\n"]
+[allowlist.credential_check]
+command = ["printf", "credential status: revoked\\n"]
+expect_stdout = "revoked"
+[allowlist.queue_pause]
+command = ["printf", "queue pause accepted\\n"]
+[allowlist.queue_check]
+command = ["printf", "queue status: paused\\n"]
+expect_stdout = "paused"
+
+[profiles.sample]
+description = "Sample workflow: cut proxy, credential, and queued work."
+[[profiles.sample.steps]]
+name = "Deny outbound tool traffic"
+action = "proxy_deny"
+verify = "proxy_check"
+[[profiles.sample.steps]]
+name = "Revoke the tool credential"
+action = "credential_revoke"
+verify = "credential_check"
+[[profiles.sample.steps]]
+name = "Pause queued invocations"
+action = "queue_pause"
+verify = "queue_check"

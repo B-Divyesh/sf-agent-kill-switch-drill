@@ -1,0 +1,74 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="description" content="Rehearse and document an allowlisted agent capability stop path." />
+    <title>Agent Kill-Switch Drill — rehearse the stop path</title>
+    <link rel="icon" href="/mark.svg" type="image/svg+xml" />
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to the drill</a>
+    <header class="topline">
+      <a class="wordmark" href="/" aria-label="Agent Kill-Switch Drill home"><span aria-hidden="true">✳</span> KILL-SWITCH DRILL</a>
+      <nav aria-label="Primary navigation"><a href="#how">How it works</a><a href="#cli">CLI</a><a href="#support">Support unlock</a></nav>
+      <button class="theme-toggle" id="theme-toggle" type="button" aria-pressed="false">Dark ink</button>
+    </header>
+    <main id="main">
+      <section class="hero" aria-labelledby="page-title">
+        <div class="hero-copy">
+          <p class="eyebrow">LOCAL-ONLY / DRY-RUN FIRST</p>
+          <h1 id="page-title">Rehearse the moment you cut an agent’s authority.</h1>
+          <p class="lede">Declare the paths that actually stop one capability. Run a safe drill. Verify the control planes. Keep an incident card — without handing your production controls to a SaaS.</p>
+          <div class="hero-actions"><a class="button primary" href="#drill">Run the safe drill <span aria-hidden="true">↓</span></a><a class="button" href="#cli">Install the CLI</a></div>
+          <p class="micro">No telemetry. No agent runtime. Commands stay on your machine.</p>
+        </div>
+        <figure class="hero-art"><img src="/relay-drum-640.webp" srcset="/relay-drum-640.webp 640w, /relay-drum.webp 1280w" sizes="(max-width: 760px) calc(100vw - 40px), 45vw" width="1400" height="933" fetchpriority="high" alt="Halftone illustration of an emergency relay cutting three tool-authority threads." /><figcaption>Withdraw authority across the whole path, not just the process.</figcaption></figure>
+      </section>
+
+      <section class="drill-section" id="drill" aria-labelledby="drill-title">
+        <div class="section-heading"><p class="eyebrow">SAFE BROWSER REHEARSAL</p><h2 id="drill-title">A stop path in three checkpoints.</h2><p>Nothing here reaches a provider. It mirrors the CLI’s default: actions are simulated; confirmations are explicit.</p></div>
+        <div class="drill-grid">
+          <div class="stage-controls" aria-label="Drill stages">
+            <button class="stage active" data-stage="0" type="button"><span>01</span><strong>Deny proxy route</strong><small>Stop new tool calls</small></button>
+            <button class="stage" data-stage="1" type="button"><span>02</span><strong>Revoke credential</strong><small>Remove existing authority</small></button>
+            <button class="stage" data-stage="2" type="button"><span>03</span><strong>Pause queue</strong><small>Hold queued work</small></button>
+            <button class="button primary run" id="run-drill" type="button">Simulate this stop path</button>
+          </div>
+          <article class="incident-card" aria-labelledby="card-title" aria-live="polite">
+            <div class="card-header"><p>INCIDENT CARD / DRY RUN</p><span id="card-stamp">READY</span></div>
+            <h3 id="card-title">payments-write</h3>
+            <p id="stage-summary">Stage 01 is selected. Run the drill to record the staged confirmations.</p>
+            <ol class="checkpoint-list" id="checkpoint-list">
+              <li><span>01</span><div><strong>Deny proxy route</strong><small>Action simulated · awaiting verification</small></div></li>
+              <li><span>02</span><div><strong>Revoke credential</strong><small>Action simulated · awaiting verification</small></div></li>
+              <li><span>03</span><div><strong>Pause queue</strong><small>Action simulated · awaiting verification</small></div></li>
+            </ol>
+            <div class="card-footer"><span id="result-text">Not yet run</span><button id="export-card" class="text-button" type="button" disabled>Export incident card</button></div>
+          </article>
+        </div>
+      </section>
+
+      <section class="path-section" id="how" aria-labelledby="how-title">
+        <div><p class="eyebrow">WHY A DRILL</p><h2 id="how-title">Observation is not authority withdrawal.</h2></div>
+        <ol class="path-list"><li><span>1</span><div><h3>Name the capability</h3><p>One profile per capability: not “turn off the agent,” but “stop payments write.”</p></div></li><li><span>2</span><div><h3>Declare each control plane</h3><p>Proxy, credential, deployment, queue: use command IDs held in a reviewed allowlist.</p></div></li><li><span>3</span><div><h3>Verify, don’t assume</h3><p>Run response checks after each step; the card makes weak links visible before an incident.</p></div></li></ol>
+      </section>
+
+      <section class="cli-section" id="cli" aria-labelledby="cli-title">
+        <div class="section-heading"><p class="eyebrow">SINGLE RUST BINARY</p><h2 id="cli-title">From a config to a scrubbed card in under five minutes.</h2></div>
+        <div class="command-shell"><div class="command-bar"><span aria-hidden="true">● ● ●</span><button class="text-button copy" data-copy="cargo install --path .\nagent-kill-switch-drill init kill-switch.toml\nagent-kill-switch-drill drill sample --config kill-switch.toml --report incident-card.json" type="button">Copy commands</button></div><pre tabindex="0" aria-label="CLI quick-start commands"><code>cargo install --path .
+agent-kill-switch-drill init kill-switch.toml
+agent-kill-switch-drill drill sample \
+  --config kill-switch.toml --report incident-card.json</code></pre></div>
+        <div class="safety-notes"><p><strong>Default is dry-run.</strong> Actions are not executed.</p><p><strong>Live requires friction.</strong> Use <code>--live --confirm profile-name</code>.</p><p><strong>Reports are quiet.</strong> IDs and statuses only — no output or provider secrets.</p></div>
+      </section>
+
+      <section class="support-section" id="support" aria-labelledby="support-title">
+        <div><p class="eyebrow">ONE-TIME SUPPORT UNLOCK</p><h2 id="support-title">Keep the core safety tool free.</h2><p>The free CLI, dry-run, verification, and JSON export stay fully useful. A US$39 one-time support unlock funds updates and opens a printable tabletop worksheet pack. Sociobot/Dodo is merchant of record.</p></div>
+        <div class="license-panel"><p id="license-status" role="status">Optional unlock — no license stored.</p><a class="button primary" id="buy-link" href="https://api.sociobot.in/api/v1/products/agent-kill-switch-drill/checkout">Buy support unlock · US$39</a><a class="button worksheet-download" id="worksheet-download" href="/tabletop-worksheet.txt" hidden>Download tabletop worksheet pack</a><form id="license-form"><label for="license-input">Restore a license</label><div><input id="license-input" name="license" autocomplete="off" /><button class="button" type="submit">Verify license</button></div><p class="form-note">Verification happens in your browser; cached valid licenses work on first paint when offline.</p></form></div>
+      </section>
+    </main>
+    <footer><p>Agent Kill-Switch Drill · local rehearsal for operational teams</p><nav aria-label="Legal"><a href="/privacy/">Privacy</a><a href="/terms/">Terms</a><a href="https://github.com/B-Divyesh/sf-agent-kill-switch-drill">Source</a></nav></footer>
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>
