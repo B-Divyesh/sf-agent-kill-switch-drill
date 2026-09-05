@@ -4,8 +4,9 @@
 
 Implementation commit `773cf64d647fb8b8dd87aa37e4ca326ef5af5485` replaced the
 failed candidate documented below. It was built, pushed, and deployed to the
-same production URL. The implementation differs from these later verification
-records; consult Git history for the documentation-record SHA.
+same production URL. Documentation evidence is commit
+`7443b565968e7279167d3806f9aaa9f9e49fd8d3`; that later report-only commit does
+not change the deployed asset image.
 
 | Earlier finding | Current disposition |
 | --- | --- |

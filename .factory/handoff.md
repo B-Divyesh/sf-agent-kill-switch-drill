@@ -7,8 +7,8 @@
 - Live URL: `https://agent-kill-switch-drill.sociobot.in`
 - Deployment: Azure Static Web App `sf-agent-kill-switch-drill`, production
   upload succeeded on 2026-09-05 UTC.
-- Documentation and verification records are committed after the implementation
-  commit. See this file’s Git history for their separate SHA.
+- Documentation evidence commit: `7443b565968e7279167d3806f9aaa9f9e49fd8d3`.
+  This later report-only commit does not change the deployed asset image.
 
 ## Job, audience, and first action
 
