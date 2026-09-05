@@ -178,7 +178,7 @@ footer p { margin: 0; }
   .topline nav a { padding: 0 3px; }
   .hero, .drill-grid, .path-section, .support-section { grid-template-columns: 1fr; gap: 30px; }
   .hero { padding: 48px 0 60px; }
-  .hero-art { order: -1; max-width: 480px; }
+  .hero-art { max-width: 480px; }
   .drill-section { padding-top: 52px; padding-bottom: 52px; }
   .path-section, .cli-section, .support-section { padding: 60px 0; }
   .safety-notes { grid-template-columns: 1fr; gap: 0; }

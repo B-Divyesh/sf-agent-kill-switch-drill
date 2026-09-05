@@ -16,7 +16,12 @@ test('@claim:sample-drill Try it with sample data opens a completed isolated dri
   const requests = [];
   page.on('request', (request) => requests.push(request.url()));
 
-  await page.goto('/?demo=1#drill');
+  await page.goto('/');
+  const firstAction = page.getByRole('link', { name: 'Try it with sample data' });
+  const actionBox = await firstAction.boundingBox();
+  expect(actionBox.y + actionBox.height).toBeLessThanOrEqual(await page.evaluate(() => innerHeight));
+  await firstAction.click();
+  await page.waitForURL(/\?demo=1#drill$/);
   await expect(page).toHaveTitle('Demo — Agent Kill-Switch Drill');
   await expect(page.getByRole('heading', { level: 1 })).toHaveText('Test your agent stop path');
   await expect(page.getByLabel('Sample data mode')).toBeVisible();
