@@ -17,14 +17,18 @@ artifact a team would save.
 | paper | `#f7f1e5` | page background |
 | ink | `#172125` | primary text, nav, outlines |
 | muted | `#526066` | supporting text |
-| oxide | `#bb321f` | stop / destructive control and emphasis |
+| oxide | `#b33220` | stop / destructive control and emphasis |
 | leaf | `#1d634c` | confirmed / pass state |
 | amber | `#875c10` | rehearsal / caution state |
 | night | `#10181b` | dark theme background |
-| night-paper | `#e9e4d8` | dark theme text |
+| night-paper | `#f6f1e5` | dark theme text |
 
 The dark treatment preserves the printed-operations tone rather than inverting
-to a generic blue dashboard. All body text pairs meet 4.5:1 contrast.
+to a generic blue dashboard. It uses a dedicated near-black drill surface,
+light card paper, warm high-contrast labels, and a darker vermilion action
+fill. This avoids the old variable inversion that made the drill card unreadable.
+All body text pairs meet 4.5:1 contrast; interactive controls and outlines meet
+the 3:1 UI threshold.
 
 ## Type and spacing
 
@@ -58,4 +62,6 @@ lights, warm recycled paper ground, coarse halftone dots, no words, no logos,
 no watermark, landscape composition.” The deployment produced a PNG that was
 locally resized and encoded as 1280 px WebP (268 KB) and 640 px WebP (45 KB).
 The asset is an original generated work; no third-party assets or fonts are
-loaded.
+loaded. `site/public/og-card.webp` is a local 1200×630 crop of that original
+illustration for sharing metadata, and `site/public/apple-touch-icon.png` is a
+local 180×180 crop. Neither adds a third-party asset.

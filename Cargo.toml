@@ -8,7 +8,7 @@ readme = "README.md"
 repository = "https://github.com/B-Divyesh/sf-agent-kill-switch-drill"
 keywords = ["agents", "incident-response", "security", "cli"]
 categories = ["command-line-utilities"]
-include = ["src/**", "examples/**", "Cargo.toml", "Cargo.lock", "README.md", "LICENSE", "CHANGELOG.md"]
+include = ["/src/**", "/examples/**", "/Cargo.toml", "/Cargo.lock", "/README.md", "/LICENSE", "/CHANGELOG.md"]
 
 [lib]
 name = "kill_switch_drill"

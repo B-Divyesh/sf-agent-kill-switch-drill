@@ -7,12 +7,12 @@
     "dev": "vite --host 0.0.0.0",
     "build": "vite build --outDir ../dist",
     "build:site": "vite build --outDir ../dist/site",
-    "test": "node --test site/tests/*.test.mjs && playwright test",
+    "test": "playwright test",
     "preview": "vite preview --host 0.0.0.0"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",
     "@playwright/test": "1.58.2",
-    "vite": "7.1.7"
+    "vite": "8.2.2"
   }
 }

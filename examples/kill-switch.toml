@@ -3,19 +3,25 @@ version = 1
 
 [allowlist.proxy_deny]
 command = ["printf", "proxy rule accepted\\n"]
+timeout_seconds = 10
 [allowlist.proxy_check]
 command = ["printf", "HTTP 403 capability denied\\n"]
 expect_stdout = "403"
+timeout_seconds = 10
 [allowlist.credential_revoke]
 command = ["printf", "credential revoke accepted\\n"]
+timeout_seconds = 10
 [allowlist.credential_check]
 command = ["printf", "credential status: revoked\\n"]
 expect_stdout = "revoked"
+timeout_seconds = 10
 [allowlist.queue_pause]
 command = ["printf", "queue pause accepted\\n"]
+timeout_seconds = 10
 [allowlist.queue_check]
 command = ["printf", "queue status: paused\\n"]
 expect_stdout = "paused"
+timeout_seconds = 10
 
 [profiles.sample]
 description = "Sample workflow: cut proxy, credential, and queued work."

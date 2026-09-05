@@ -1,0 +1,65 @@
+[
+  {
+    "id": "sample-drill",
+    "claim": "Try it with sample data opens a completed three-checkpoint dry-run without saving real drill data.",
+    "where": "landing page first action and demo banner",
+    "test": "npm test -- --grep @claim:sample-drill",
+    "sandbox": "fresh browser context at /?demo=1; checks the completed card, demo namespace, reset, and Start for real disposal"
+  },
+  {
+    "id": "incident-card-export",
+    "claim": "The sample drill exports a scrubbed incident card.",
+    "where": "demo incident card",
+    "test": "npm test -- --grep @claim:incident-card-export",
+    "sandbox": "fresh browser context at /?demo=1; downloads and parses the card"
+  },
+  {
+    "id": "license-gate",
+    "claim": "The printable worksheet pack downloads only after a valid license result.",
+    "where": "support unlock panel",
+    "test": "npm test -- --grep @claim:license-gate",
+    "sandbox": "clean browser hides the control and receives 404 for the former public asset; mocked valid billing response enables a worksheet download"
+  },
+  {
+    "id": "privacy-default",
+    "claim": "The default sample drill makes no third-party requests.",
+    "where": "privacy page and landing page",
+    "test": "npm test -- --grep @claim:privacy-default",
+    "sandbox": "records all requests during a fresh sample flow and accepts only the site origin"
+  },
+  {
+    "id": "dry-run-default",
+    "claim": "Dry run is the default and does not execute action commands.",
+    "where": "landing page, README, CLI help",
+    "test": "cargo test --all-targets dry_run_executes_check_not_action",
+    "sandbox": "allowlisted failing action with a passing verification; the returned card records a simulated action and confirms the check"
+  },
+  {
+    "id": "command-timeout",
+    "claim": "A command timeout becomes a failed checkpoint and still writes an incident card.",
+    "where": "landing page and README",
+    "test": "cargo test --all-targets timed_out_verification_writes_a_reviewable_report",
+    "sandbox": "installed test binary runs a one-second timeout against sleep, exits 2, and writes a failed-checkpoint report"
+  },
+  {
+    "id": "scrubbed-reports",
+    "claim": "Reports use command IDs and statuses only.",
+    "where": "landing page and README",
+    "test": "cargo test --all-targets reports_exclude_command_details_and_output",
+    "sandbox": "a verification emits a secret-like value; serialized card excludes the command and its output"
+  },
+  {
+    "id": "bundled-cli-demo",
+    "claim": "The CLI demo runs the bundled harmless sample and writes its report in a temporary directory.",
+    "where": "README",
+    "test": "cargo test --all-targets demo_runs_the_bundled_sample_and_writes_a_temp_report",
+    "sandbox": "CLI consumer test runs demo --json, parses its completed sample card, reads the reported temp file, then removes it"
+  },
+  {
+    "id": "support-offer",
+    "claim": "The worksheet support unlock is a US$39 one-time purchase through Sociobot/Dodo.",
+    "where": "support unlock panel and terms",
+    "test": "test \"$(curl -sS -o /dev/null -w '%{http_code}' --max-redirs 0 https://api.sociobot.in/api/v1/products/agent-kill-switch-drill/checkout)\" = 303",
+    "sandbox": "live product checkout endpoint must return its hosted-checkout redirect; no payment is submitted"
+  }
+]

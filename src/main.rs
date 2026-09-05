@@ -1,6 +1,11 @@
 use clap::{Parser, Subcommand};
-use kill_switch_drill::{parse_config, run_drill, validate, write_card, DrillError};
-use std::{fs, path::PathBuf, process::ExitCode};
+use kill_switch_drill::{parse_config, run_drill, validate, write_card, DrillError, IncidentCard};
+use std::{
+    fs,
+    path::PathBuf,
+    process::{self, ExitCode},
+    time::{SystemTime, UNIX_EPOCH},
+};
 const SAMPLE: &str = include_str!("../examples/kill-switch.toml");
 #[derive(Parser)]
 #[command(
@@ -15,6 +20,11 @@ struct Cli {
 }
 #[derive(Subcommand)]
 enum Commands {
+    /// Run the bundled harmless sample and write its incident card to a temp directory.
+    Demo {
+        #[arg(long)]
+        json: bool,
+    },
     /// Write a reviewed, harmless sample configuration.
     Init {
         #[arg(default_value = "kill-switch.toml")]
@@ -49,6 +59,46 @@ fn load(path: &PathBuf) -> Result<kill_switch_drill::Config, String> {
         .map_err(|e| format!("could not read {}: {e}", path.display()))
         .and_then(|s| parse_config(&s).map_err(|e| e.to_string()))
 }
+
+fn print_card(card: &IncidentCard, json: bool) {
+    if json {
+        println!("{}", serde_json::to_string_pretty(card).unwrap());
+    } else {
+        println!(
+            "INCIDENT CARD · {} · {}",
+            card.profile,
+            card.mode.replace('_', " ")
+        );
+        for checkpoint in &card.checkpoints {
+            println!(
+                "{} — action: {:?}; verification: {:?} ({})",
+                checkpoint.name, checkpoint.action, checkpoint.verification, checkpoint.note
+            );
+        }
+        println!(
+            "RESULT: {}",
+            if card.all_confirmed {
+                "ALL DECLARED PATHS CONFIRMED"
+            } else {
+                "REVIEW REQUIRED"
+            }
+        );
+    }
+}
+
+fn demo_directory() -> Result<PathBuf, String> {
+    let nonce = SystemTime::now()
+        .duration_since(UNIX_EPOCH)
+        .map_err(|error| error.to_string())?
+        .as_nanos();
+    let directory = std::env::temp_dir().join(format!(
+        "agent-kill-switch-drill-demo-{}-{nonce}",
+        process::id()
+    ));
+    fs::create_dir(&directory)
+        .map_err(|error| format!("could not create demo directory: {error}"))?;
+    Ok(directory)
+}
 fn main() -> ExitCode {
     match execute(Cli::parse()) {
         Ok(code) => ExitCode::from(code),
@@ -60,6 +110,20 @@ fn main() -> ExitCode {
 }
 fn execute(cli: Cli) -> Result<u8, String> {
     match cli.command {
+        Commands::Demo { json } => {
+            let directory = demo_directory()?;
+            let config = directory.join("kill-switch.toml");
+            let report = directory.join("incident-card.json");
+            fs::write(&config, SAMPLE).map_err(|error| error.to_string())?;
+            let config = load(&config)?;
+            let card = run_drill(&config, "sample", false, true)
+                .map_err(|error: DrillError| error.to_string())?;
+            write_card(&report, &card)
+                .map_err(|error| format!("could not write demo report: {error}"))?;
+            eprintln!("Demo report: {}", report.display());
+            print_card(&card, json);
+            Ok(if card.all_confirmed { 0 } else { 2 })
+        }
         Commands::Init { path } => {
             if path.exists() {
                 return Err(format!(
@@ -109,29 +173,7 @@ fn execute(cli: Cli) -> Result<u8, String> {
             if let Some(path) = report {
                 write_card(&path, &card).map_err(|e| format!("could not write report: {e}"))?;
             }
-            if json {
-                println!("{}", serde_json::to_string_pretty(&card).unwrap());
-            } else {
-                println!(
-                    "INCIDENT CARD · {} · {}",
-                    card.profile,
-                    card.mode.replace('_', " ")
-                );
-                for c in &card.checkpoints {
-                    println!(
-                        "{} — action: {:?}; verification: {:?} ({})",
-                        c.name, c.action, c.verification, c.note
-                    );
-                }
-                println!(
-                    "RESULT: {}",
-                    if card.all_confirmed {
-                        "ALL DECLARED PATHS CONFIRMED"
-                    } else {
-                        "REVIEW REQUIRED"
-                    }
-                );
-            }
+            print_card(&card, json);
             Ok(if card.all_confirmed { 0 } else { 2 })
         }
     }

@@ -1,0 +1,1 @@
+Test a named agent stop path before an incident.
