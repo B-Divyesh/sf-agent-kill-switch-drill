@@ -1,5 +1,30 @@
 # Independent verification — Agent Kill-Switch Drill
 
+## Repair verification — 2026-09-05 UTC
+
+Implementation commit `773cf64d647fb8b8dd87aa37e4ca326ef5af5485` replaced the
+failed candidate documented below. It was built, pushed, and deployed to the
+same production URL. The implementation differs from these later verification
+records; consult Git history for the documentation-record SHA.
+
+| Earlier finding | Current disposition |
+| --- | --- |
+| Hung CLI command wrote no card | Fixed: bounded 1–30 second command timeouts produce a failed checkpoint and saved card. |
+| Worksheet exposed without a license | Fixed: locked control is hidden with a real `[hidden]` rule; no public worksheet file is deployed; valid verification enables a Blob download. |
+| 21 dark-mode contrast failures | Fixed: fresh light and dark desktop/phone axe scans report zero serious/critical violations. |
+| Undersized navigation/footer targets | Fixed: header and footer interactions are at least 44×44 px. |
+| High Vite advisory | Fixed: Vite 8.2.2 and both full and production audit commands report zero vulnerabilities. |
+| Dirty oversized Cargo package | Fixed: root-anchored includes yield a clean 10-file package. |
+| Missing browser policies | Fixed: live CSP, Permissions-Policy, `X-Frame-Options`, referrer, and MIME headers verified. |
+| Short asset caching | Fixed: live hashed assets return `max-age=31536000, immutable`. |
+| Unknown routes returned home with 200 | Fixed: live unknown route returns styled 404 with HTTP 404. |
+
+Additional repair verification: clean setup checks, all declared claim commands,
+isolated packaged-CLI demo, live browser sample/reset/disposal, HTTPS headers,
+checkout redirect, and rate limit (30 × 200 then 429 with `Retry-After: 3`)
+passed. Lighthouse mobile was 99/100/100/100 for performance, accessibility,
+best practices, and SEO (LCP 2.3 s; CLS 0).
+
 ## Verdict
 
 **FAIL** — candidate `78bac1779d31c4cdfef76b2bf0a1ed68cc2b28ef` is deployed at

@@ -1,58 +1,48 @@
-# Verification handoff — Agent Kill-Switch Drill
+# Handoff — Agent Kill-Switch Drill repair
 
 ## Result
 
-**FAIL**
+**PASS** for implementation commit `773cf64d647fb8b8dd87aa37e4ca326ef5af5485`.
 
-- Candidate: `78bac1779d31c4cdfef76b2bf0a1ed68cc2b28ef`
 - Live URL: `https://agent-kill-switch-drill.sociobot.in`
-- Verified: 2026-08-28 UTC
-- Full evidence: [verification.md](verification.md)
+- Deployment: Azure Static Web App `sf-agent-kill-switch-drill`, production
+  upload succeeded on 2026-09-05 UTC.
+- Documentation and verification records are committed after the implementation
+  commit. See this file’s Git history for their separate SHA.
 
-The live HTML, hashed JS/CSS, robots file, and both images match a fresh local
-production build byte for byte. The result is therefore based on the candidate
-itself, not a stale deployment or a deployment-only outage.
+## Job, audience, and first action
 
-## Release blockers
+The product helps production teams test how they stop one named agent
+capability and record each control check. On desktop and a 390 px phone, the
+first screen states that job, identifies production teams as the audience, and
+shows **Try it with sample data** before scrolling. The action opens a completed
+`payments-write` dry run.
 
-1. CLI commands have no timeout. An unresponsive verification can hang forever
-   and produce no incident card, violating the core under-five-minute job.
-2. The paid worksheet is visibly downloadable without a license because the
-   `.button` display rule overrides the link's `hidden` attribute.
-3. Dark mode has an axe serious contrast violation across 21 nodes on both
-   desktop and 390 px mobile (ratios down to 1.21:1).
+## Repaired findings
 
-Additional defects: navigation/footer touch targets are below 44 px; the Vite
-dev dependency has a high-severity advisory; clean crate packaging fails after
-`npm ci` and the forced crate contains 36 `node_modules` README/LICENSE files;
-the live origin lacks CSP, Permissions-Policy, and clickjacking policy; hashed
-assets cache for only 30 seconds; unknown URLs return 200.
+- Every allowlisted command now has `timeout_seconds`, defaulting to 30 and
+  limited to 1–30 seconds. A timeout kills the child command, becomes a failed
+  checkpoint, returns exit code 2, and still writes the incident card.
+- The worksheet is no longer a public static URL. A locked visitor has no
+  visible control and `/tabletop-worksheet.txt` returns 404. A valid license
+  result enables a local Blob download.
+- Dark mode now has a dedicated drill surface, readable light incident card,
+  and contrast-safe status tokens. Fresh desktop and phone axe scans found zero
+  serious or critical violations in light and dark themes.
+- Header and footer links now meet the 44 px touch-target baseline.
+- Vite is updated to 8.2.2; `npm audit --audit-level=high` reports zero
+  vulnerabilities.
+- Cargo package paths are anchored. `cargo package --locked` now succeeds with
+  10 project files and no `node_modules` content.
+- The static site now ships CSP, Permissions-Policy, frame protection,
+  immutable cache policy for hashed assets, sitemap/robots, route metadata,
+  generated sharing assets, and a designed 404 that returns HTTP 404.
+- The landing page now has an isolated browser demo and the CLI has `demo`,
+  which runs the bundled harmless sample in a temporary directory.
 
-## What passed
+## Verification
 
-- `cargo test --all-targets`: 4 passed.
-- `cargo test --doc`: 1 passed.
-- Rust fmt and clippy with warnings denied: passed.
-- `npm test`: 2 Node + 4 Playwright tests passed.
-- `npm run build` and `npm run build:site`: passed; `dist/` produced.
-- Release build and `cargo package --locked --allow-dirty`: passed.
-- The packaged CLI installed in a clean prefix; a separate Rust consumer used
-  its public API successfully.
-- Normal dry-run/live flows, invalid input, refusal to overwrite, confirmation
-  guard, exit codes, JSON output, failure reporting, and secret scrubbing were
-  exercised successfully apart from the timeout blocker.
-- Light-theme and legal-page axe scans had zero serious/critical findings;
-  keyboard flow, visible focus, responsive reflow, console/page errors, and
-  reduced motion otherwise passed.
-- Default page load contacted only the product origin and set no cookies.
-- License URL cleanup, local storage, invalid-token locking, and one-day cache
-  behavior passed logically.
-- Verify endpoint rate limit passed: requests 1–30 returned 200; request 31
-  returned 429 with `Retry-After: 4`.
-- Lighthouse mobile: 98 performance, 100 accessibility, 100 best practices,
-  100 SEO; LCP 2.3 s, TBT 20 ms, CLS 0.
-
-## Reproduce
+From the documented clean setup:
 
 ```sh
 npm ci
@@ -62,18 +52,43 @@ cargo fmt --all -- --check
 cargo clippy --all-targets --all-features -- -D warnings
 npm test
 npm run build
-npm audit --audit-level=high
+npm run build:site
 cargo package --locked
+npm audit --audit-level=high
+npm audit --omit=dev --audit-level=high
 ```
 
-The final two commands expose the dependency and packaging failures. See the
-full verification report for isolated-package, CLI boundary, live-browser,
-headers, hashes, Lighthouse, and rate-limit evidence.
+All commands passed. `npm test` ran 14 Playwright checks across desktop and
+phone. Every command in `.factory/claims.json` was run individually and passed.
+The packaged crate was installed into a separate temporary prefix; its installed
+`demo --json` produced a completed three-checkpoint card.
 
-## Next steps
+Fresh live Chromium contexts verified desktop and phone behavior: one heading,
+language and landmark structure, visible focus, first-screen primary action,
+sample banner and label, reset and disposal, incident-card download, locked
+worksheet, no cookies, no third-party default requests, legal routes, and zero
+serious/critical axe findings in both themes. Live headers include CSP,
+Permissions-Policy, `X-Frame-Options: DENY`, and immutable caching on hashed
+assets. The live unknown route returned the styled 404; the former worksheet URL
+returned 404.
 
-Add per-command timeouts and timeout reports; restore actual paid gating; fix
-dark-theme contrast and target sizes; update Vite; root-anchor Cargo package
-includes; add CSP/Permissions-Policy/frame protection; set immutable caching
-for hashed assets; and return 404 for unknown paths. Then run a fresh independent
-verification against the replacement commit and deployment.
+License verification allowance was checked again: 30 invalid requests returned
+200 and request 31 returned 429 with `Retry-After: 3`. The existing checkout
+endpoint returned its hosted-checkout 303, so billing registration is active.
+
+Lighthouse mobile on the live origin: Performance 99, Accessibility 100, Best
+Practices 100, SEO 100; FCP 1.0 s, LCP 2.3 s, TBT 0 ms, CLS 0. Lighthouse
+printed a late browser-tab-crash launcher message after producing that complete
+report; the independent Playwright browser pass had no console or page errors.
+
+## Known limits and next steps
+
+- The worksheet UI and public static path are license-gated. A static browser
+  product cannot make a document delivered in its JavaScript bundle confidential
+  from a determined person with browser developer tools. A truly protected paid
+  asset would require a product backend; none was added because the product is
+  intentionally static and local-first.
+- The sample commands are harmless `printf` calls. Teams must replace them with
+  reviewed, versioned control-plane commands and rehearse an approved live path.
+- The factory owns registry publication and billing administration. The package
+  is ready for `cargo publish`; no publish or payment action was taken here.
